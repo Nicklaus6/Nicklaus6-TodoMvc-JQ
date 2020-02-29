@@ -1,0 +1,12 @@
+/*
+
+app-template.css overrides
+
+remove this comment if used
+remove this file if not
+
+*/
+/* 1.页面初始化 */
+.main,.footer,.clear-completed{
+  display: none;
+}
