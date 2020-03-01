@@ -17,12 +17,7 @@ $(function() {
   })
 
   // 2. 删除
-  $todoList.on('click', '.destroy', function(e) {
-    e.stopPropagation()
-    e.preventDefault()
-    console.log(e)
-    return false
-  })
+  $todoList.on('click', '.destroy', removeItem)
 
   /**
    * @function 添加一个todo-item
@@ -49,9 +44,25 @@ $(function() {
       </li>
     `)
 
-    $count.text($todoList.children().length)
+    computedCount()
 
     $input.val('')
 
+  }
+
+  /**
+   * @function 移除`Item`
+   */
+
+  function removeItem () {
+    $(this).parent().parent().remove()
+    computedCount()
+  }
+
+  /**
+   * @function 计算`items`数目
+   */
+  function computedCount() {
+    $count.text($todoList.children().length)
   }
 })
