@@ -16,6 +16,14 @@ $(function() {
     }
   })
 
+  // 2. 删除
+  $todoList.on('click', '.destroy', function(e) {
+    e.stopPropagation()
+    e.preventDefault()
+    console.log(e)
+    return false
+  })
+
   /**
    * @function 添加一个todo-item
    * @param {String} value 需要添加的值
