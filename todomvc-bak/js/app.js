@@ -16,8 +16,11 @@ $(function() {
     }
   })
 
-  // 2. 删除
-  $todoList.on('click', '.destroy', removeItem)
+  // 2. 删除`item`
+  $todoList.on('click', '.destroy', function removeItem() {
+    $(this).parent().parent().remove()
+    computedCount()
+  })
 
   /**
    * @function 添加一个todo-item
@@ -48,15 +51,6 @@ $(function() {
 
     $input.val('')
 
-  }
-
-  /**
-   * @function 移除`Item`
-   */
-
-  function removeItem () {
-    $(this).parent().parent().remove()
-    computedCount()
   }
 
   /**
