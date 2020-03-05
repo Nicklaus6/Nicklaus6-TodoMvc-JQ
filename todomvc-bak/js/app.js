@@ -2,14 +2,18 @@ $(function() {
   const ENTER = 13
   const ESC = 27
 
+  const SINGLE = 0
+  const ALL = -1
+
   let $todoList = $('.todo-list')
   let $input = $('.new-todo')
   let $main = $('.main')
   let $footer = $('.footer')
   let $count = $('.todo-count strong')
+  let $mainCheckbox = $('#toggle-all')
 
   // 状态标识位
-  let isUpdate = false 
+  let isUpdate = false
 
   // 1. enter 保存数据
   $input.on('keydown', function(e) {
@@ -50,6 +54,23 @@ $(function() {
     updateItem($(this).parent())
     $(this).parent().removeClass('editing')
   })
+
+  // 5. checkbox 切换选中
+  $todoList.on('click', '.toggle', function removeItem(event) {
+    const checked = $(this).prop('checked')
+    $(this).parent().parent().toggleClass("completed", () => checked)
+    informChecked(SINGLE)
+  })
+
+  // 6. 全局选中/未选中 切换
+  $mainCheckbox.on('change', () => {
+    informChecked(ALL)
+  })
+
+
+  // * 阻止 checkbox 的双击事件
+  // 原因：双击过快会触发 label 的双击编辑事件
+  $todoList.on('dblclick', '.toggle', () => false)
 
   /**
    * @function 添加一个todo-item
@@ -104,4 +125,39 @@ $(function() {
     // 复位
     isUpdate = false
   }
+
+  /**
+   * @function 通知全选按钮状态
+   * @param { Number } status 选中的类型，目前只有: SINGLE 和 ALL 两种。
+   * @description
+   * SINGLE: 说明点击的是 item 项的checkbox
+   * ALL: 说明点击的是全选的 checkbox
+   * 把切换逻辑都写在这里，方便维护
+   */
+  function informChecked (status) {
+    if(status === SINGLE) {
+      let isChecked = true
+      $todoList.children('li').each((i, item) => {
+
+        // 方法1: 可能会看不懂
+        // isChecked = isChecked && item.classList.contains('completed')
+
+        // 方法2: 相对容易理解
+        if(isChecked && !item.classList.contains('completed')) {
+          isChecked = false
+        }
+      })
+      $mainCheckbox.prop('checked', isChecked)
+    }
+
+    if (status === ALL) {
+      const isChecked = $mainCheckbox.prop('checked')
+      const operation = isChecked ? 'addClass': 'removeClass'
+      $todoList.children('li').each((i, item) => {
+        $(item)[operation]('completed')
+        $('.toggle').prop('checked', isChecked)
+      })
+    }
+  }
+
 })
