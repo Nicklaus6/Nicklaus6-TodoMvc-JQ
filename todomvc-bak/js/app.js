@@ -63,10 +63,7 @@ $(function() {
   })
 
   // 6. 全局选中/未选中 切换
-  $mainCheckbox.on('change', () => {
-    informChecked(ALL)
-  })
-
+  $mainCheckbox.on('change', informChecked.bind(null, ALL))
 
   // * 阻止 checkbox 的双击事件
   // 原因：双击过快会触发 label 的双击编辑事件
