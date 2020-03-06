@@ -1,4 +1,4 @@
-$(function() {
+$(function () {
   const ENTER = 13
   const ESC = 27
 
@@ -16,7 +16,7 @@ $(function() {
   let isUpdate = false
 
   // 1. enter 保存数据
-  $input.on('keydown', function(e) {
+  $input.on('keydown', function (e) {
     const { keyCode, target } = e
     if (keyCode === ENTER && target.value !== '') {
       addTodoItem(target.value)
@@ -24,13 +24,13 @@ $(function() {
   })
 
   // 2. 删除`item`
-  $todoList.on('click', '.destroy', function removeItem() {
+  $todoList.on('click', '.destroy', function removeItem () {
     $(this).parent().parent().remove()
     computedCount()
   })
 
   // 3. edit item
-  $todoList.on('dblclick', '.view', function editItem() {
+  $todoList.on('dblclick', '.view', function editItem () {
     $(this).parent().addClass('editing')
 
     const $edit = $(this).siblings('.edit')
@@ -40,7 +40,7 @@ $(function() {
     // 如果想用 on 事件的话，建议先 off 请求原来的事件再重新绑定
 
     // 不管是 ESC 还是 ENTER，目的都是失焦，仅仅就是看是否需要更新数据罢了
-    $edit.keydown(function(e) {
+    $edit.keydown(function (e) {
       const { keyCode } = e
       if (keyCode === ESC || keyCode === ENTER) {
         isUpdate = keyCode === ENTER
@@ -50,13 +50,13 @@ $(function() {
   })
 
   // 4. 失焦
-  $todoList.on('blur', '.edit', function blurInput() {
+  $todoList.on('blur', '.edit', function blurInput () {
     updateItem($(this).parent())
     $(this).parent().removeClass('editing')
   })
 
   // 5. checkbox 切换选中
-  $todoList.on('click', '.toggle', function removeItem(event) {
+  $todoList.on('click', '.toggle', function removeItem (event) {
     const checked = $(this).prop('checked')
     $(this).parent().parent().toggleClass("completed", () => checked)
     informChecked(SINGLE)
@@ -96,7 +96,7 @@ $(function() {
   /**
    * @function 计算`items`数目,清除头部，底部状态。
    */
-  function computedCount() {
+  function computedCount () {
     const len = $todoList.children().length
     const display = len > 0 ? 'block' : 'none'
 
@@ -132,7 +132,7 @@ $(function() {
    * 把切换逻辑都写在这里，方便维护
    */
   function informChecked (status) {
-    if(status === SINGLE) {
+    if (status === SINGLE) {
       let isChecked = true
       $todoList.children('li').each((i, item) => {
 
@@ -140,7 +140,7 @@ $(function() {
         // isChecked = isChecked && item.classList.contains('completed')
 
         // 方法2: 相对容易理解
-        if(isChecked && !item.classList.contains('completed')) {
+        if (isChecked && !item.classList.contains('completed')) {
           isChecked = false
         }
       })
@@ -149,7 +149,7 @@ $(function() {
 
     if (status === ALL) {
       const isChecked = $mainCheckbox.prop('checked')
-      const operation = isChecked ? 'addClass': 'removeClass'
+      const operation = isChecked ? 'addClass' : 'removeClass'
       $todoList.children('li').each((i, item) => {
         $(item)[operation]('completed')
         $('.toggle').prop('checked', isChecked)
