@@ -121,20 +121,19 @@ $(function () {
     // .edit 获得焦点
     $(this).siblings('.edit').focus();
 
-    const $edit = $(this).siblings('.edit')
+    const $edit = $(this).siblings('.edit');
 
     //不用on绑定 是为了覆盖事件，减少内存只占用和处理Bug , on多次调用会产生bug
 
-    $edit.keydown(function (e) {
-
-      const { keyCode, target } = e
+    $edit.off('keydown').keydown(function (e) {
+      const { keycode, target } = e
       //enter   输入内容不为空 就将点击的label标签中的内容替换为当前对象的value  为空就删除这个todo
-      if (event.keyCode === 13) {
+      if (event.keyCode === 13 || e.target.blur) {
+        debugger
+        //键盘事件和blur冲突如何解决？
         if (this.value !== '') {
-          debugger
-          ///输入内容不为空 就将点击的label标签中的内容替换为当前对象的value
-          console.log(target.value)
 
+          ///输入内容不为空 就将点击的label标签中的内容替换为当前对象的value
           //将点击的label标签中的内容替换为当前对象的value
           $(this).siblings('.view').children('label').text($(this).val());
 
@@ -158,28 +157,32 @@ $(function () {
 
           //退出编辑状态 清除class 'editing'
           $(this).parents('li').removeClass('editing');
-          return false;
+
+
         }
         else {
-          console.log(this.value)
           //内容为空 就删除这个todo
           $(this).parents('li').remove();
           clean();
         }
 
       };
-      //第一次修改 正常执行if else中的一个 第二次修改就执行一次if又执行一次else
-
+      //原代码$edit.off('keydown').keydown(function (e) {
+      //bug:第一次修改 正常执行if else中的一个 第二次修改就执行一次if又执行一次else
+      //解决方法：解除之前的绑定事件， 重新绑定
 
       //esc 则退出编辑状态 清除class'editing'
       if (event.keyCode === 27) {
         $(this).parents('li').removeClass('editing');
       };
-    }
-
-    )
+    })
   })
+
 })
+
+
+
+
 
 
 
