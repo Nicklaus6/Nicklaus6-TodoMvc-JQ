@@ -126,9 +126,9 @@ $(function () {
     //当前按钮是否选中
     if ($(this).prop('checked')) {
       //选中了 就把todo 的所有li添加.compleater
-      $('.todo-list li').addClass('.completed');
+      $('.toggle').attr('checked', 'true');
     } else {
-      $('.todo-list li').removeClass('.completed');
+      $('.toggle').attr('checked', 'false');
     }
   })
 
