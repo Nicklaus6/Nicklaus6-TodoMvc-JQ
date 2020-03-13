@@ -22,7 +22,7 @@ $(function () {
    * @description 判断是否有打勾状态的元素 有就显示 没就隐藏
    */
 
-  function clearCompleatedStatus () {
+  function clearCompletedStatus () {
     if ($('.toggle:checkbox:checked').length > 0) {
       $('.clear-completed').show();
     } else {
@@ -58,12 +58,20 @@ $(function () {
 
     //添加新的todo后 .new-todo恢复初始状态 并失去焦点
     $('.new-todo').val('').blur();
-
-    //底部counter数据更新
-    let $counter = $('.todo-list li').length
-    $('.todo-count strong').html(`${$counter}`)
+    $('.toggle-all').prop('checked', false)
+    leftCounter();
   }
 
+  /** @function 计算底部itemleft
+   * @param {string}value 
+   * @description 底部itemleft=li的Length-完成状态的li的length
+   */
+  function leftCounter () {
+    let $liCounter = $('.todo-list li').length;
+    let $completedCounter = $('.todo-list .completed').length;
+    let $leftCount = $liCounter - $completedCounter;
+    $('.todo-count strong').html(`${$leftCount}`)
+  }
 
   //2.添加todo
   //在.new-todo中输入内容后 回车 创建一行新的todo
@@ -74,6 +82,7 @@ $(function () {
     if (event.keyCode === 13 && $.trim(target.value) != '') {
       addTodo($.trim(target.value));
     }
+
   })
 
 
@@ -85,7 +94,8 @@ $(function () {
     //选出当前对象的所有祖先中的li元素，remove()删除li元素和它的子元素，empty()只删除子元素。
     $(this).parents('li').remove().children('.toggle').attr('checked', false);
     footerHide();
-    clearCompleatedStatus();
+    clearCompletedStatus();
+    leftCounter();
   })
 
   //4.打勾按钮
@@ -95,10 +105,19 @@ $(function () {
     //一开始的思路是根据判断是否有class来做 看了很久不知道问题出在哪里 控制台的东西也很乱 会打印好几次 没弄懂为什么 所以换个思路
     //判断选框状态是否checked  选中就addClass  没选中就removeClass
     if ($(this).prop('checked')) {
-      $(this).parents('li').addClass('completed')
+      $(this).parents('li').addClass('completed');
+      if ($('.toggle:checkbox:checked').length == $('.toggle').length) {
+        //如果所有的都打勾了 全选打勾
+
+        $('.toggle-all').prop('checked', true);
+      }
     }
     else {
-      $(this).parents('li').removeClass('completed')
+      $(this).parents('li').removeClass('completed');
+      if ($('.toggle:checkbox:not(checked)').length == $('.toggle').length) {
+        //如果所有的都不打勾了 全选不打勾
+        $('.toggle-all').prop('checked', false);
+      }
     };
     //判断所在的li有没有class'completed' 有就删除没有就添加
     // if ($(this).parents('li').hasClass('completed')) {
@@ -111,10 +130,9 @@ $(function () {
     //试了改了好几次总不行 重新写个吧
     //console.log($(this).prop('checked'))
 
-    //当至少有一个todo .toggle时才显示
+    clearCompletedStatus();
+    leftCounter();
 
-    clearCompleatedStatus();
-    //点击 .toggle-all 
   })
 
   //5.全部打勾/取消打勾按钮
@@ -125,11 +143,15 @@ $(function () {
 
     //当前按钮是否选中
     if ($(this).prop('checked')) {
-      //选中了 就把todo 的所有li添加.compleater
-      $('.toggle').attr('checked', 'true');
+      //选中了 就把todo 的所有li添加.completer
+      $('.toggle').prop('checked', true).parents('li').addClass('completed');
+
     } else {
-      $('.toggle').attr('checked', 'false');
+      $('.toggle').removeAttr('checked').parents('li').removeClass('completed');
+
     }
+    clearCompletedStatus();
+    leftCounter()
   })
 
   //6.清除已完成
@@ -238,6 +260,11 @@ $(function () {
     })
   })
 
+  //8.底部完成和未完成的切换
+
+  //8.1 点击All 显示全部todo
+  //8.2 点击active 隐藏未完成的todo
+  //8.3 点击completed 隐藏完成的todo项
 
 
 
