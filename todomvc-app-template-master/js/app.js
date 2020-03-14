@@ -132,7 +132,6 @@ $(function () {
 
     clearCompletedStatus();
     leftCounter();
-
   })
 
   //5.全部打勾/取消打勾按钮
@@ -263,8 +262,35 @@ $(function () {
   //8.底部完成和未完成的切换
 
   //8.1 点击All 显示全部todo
-  //8.2 点击active 隐藏未完成的todo
-  //8.3 点击completed 隐藏完成的todo项
+  $('.filters').on('click', '.showAll', function () {
+    //添加selected类名
+    $(this).parents('.filters').children('.selected').removeClass('selected');
+    $(this).addClass('selected')
+    $(".todo list").show();
+
+  })
+
+  //8.2 点击active 显示未完成的todo 隐藏完成的
+  $('.filters').on('click', '.showActive', function () {
+
+    $(this).parents('.filters').children('.selected').removeClass('selected');
+    $(this).addClass('selected')
+    //过滤未完成的 完成的隐藏 未完成的显示
+
+    $('.todo-list li').filter($('.completed')).show();
+    $('.completed').hide();
+  })
+
+  //8.3 点击completed 显示完成的 隐藏完成的
+  $('.filters').on('click', '.showCompleted', function () {
+    $(this).parents('.filters').children('.selected').removeClass('selected');
+    $(this).addClass('selected')
+    //未完成的隐藏
+
+    $('.completed').show()
+    $('.todo-list li').filter($('.completed')).hide();
+
+  })
 
 
 
