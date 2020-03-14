@@ -62,8 +62,7 @@ $(function () {
     leftCounter();
   }
 
-  /** @function 计算底部itemleft
-   * @param {string}value 
+  /** @function 计算底部itemleft 
    * @description 底部itemleft=li的Length-完成状态的li的length
    */
   function leftCounter () {
@@ -71,6 +70,15 @@ $(function () {
     let $completedCounter = $('.todo-list .completed').length;
     let $leftCount = $liCounter - $completedCounter;
     $('.todo-count strong').html(`${$leftCount}`)
+  }
+
+  /** @function selected类的添加删除
+    * @description 底部状态筛选 点击的添加类 其余两个删除类
+    */
+  function isSelected (target) {
+
+    $(target).parents('.filters').find('.selected').removeClass('selected');
+    $(target).addClass('selected')
   }
 
   //2.添加todo
@@ -81,8 +89,9 @@ $(function () {
     //当在.new-todo中按下回车 而且.new-todo中内容不为空
     if (event.keyCode === 13 && $.trim(target.value) != '') {
       addTodo($.trim(target.value));
+      //防止在只显示完成的情况下添加新的todo会在compleated状态显示新添加的todo的情况 同时添加一个新的todo时直接让用户看到all可以提升体验
+      $('.showAll').addClass('selected').show();
     }
-
   })
 
 
@@ -259,36 +268,43 @@ $(function () {
     })
   })
 
+
   //8.底部完成和未完成的切换
 
   //8.1 点击All 显示全部todo
   $('.filters').on('click', '.showAll', function () {
-    //添加selected类名
-    $(this).parents('.filters').children('.selected').removeClass('selected');
-    $(this).addClass('selected')
-    $(".todo list").show();
+    //添加selected类名 另外两个去除该类名
+    isSelected(this)
 
+    // $(this).parents('.filters').find('.selected').removeClass('selected');
+    // $(this).addClass('selected')
+    //注意children只能选择下面一级子元素 要选一级以上的用find
+
+    $(".todo-list li").show();
   })
 
   //8.2 点击active 显示未完成的todo 隐藏完成的
   $('.filters').on('click', '.showActive', function () {
-
-    $(this).parents('.filters').children('.selected').removeClass('selected');
-    $(this).addClass('selected')
+    isSelected(this)
+    // $(this).parents('.filters').find('.selected').removeClass('selected');
+    // $(this).addClass('selected')
     //过滤未完成的 完成的隐藏 未完成的显示
-
-    $('.todo-list li').filter($('.completed')).show();
+    //获取完成的很方便 获取没完成的有点麻烦 所以可以逆向思维 全部显示 再把不要的隐藏
+    $('.todo-list li').show();
     $('.completed').hide();
+
   })
 
-  //8.3 点击completed 显示完成的 隐藏完成的
+  //8.3 点击completed 显示完成的 隐藏未完成的
   $('.filters').on('click', '.showCompleted', function () {
-    $(this).parents('.filters').children('.selected').removeClass('selected');
-    $(this).addClass('selected')
-    //未完成的隐藏
+    isSelected(this)
 
-    $('.completed').show()
-    $('.todo-list li').filter($('.completed')).hide();
+    // $(this).parents('.filters').find('.selected').removeClass('selected');
+    // $(this).addClass('selected')
+    //未完成的隐藏
+    $('.todo-list li').hide();
+    $('.completed').show();
+
 
   })
 
